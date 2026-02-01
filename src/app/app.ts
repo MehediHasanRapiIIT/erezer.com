@@ -50,6 +50,6 @@ export class App {
     this.showSuccessMessage = true;
     setTimeout(() => {
       this.showSuccessMessage = false;
-    }, 3000);
+    }, 5000);
   }
 }
