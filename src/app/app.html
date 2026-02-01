@@ -5,7 +5,7 @@
       <div class="flex justify-between items-center">
         <div class="flex items-center space-x-3">
           <img src="logo.ico" alt="Logo" class="h-8 w-8 sm:h-10 sm:w-10 bg-white rounded p-1">
-          <h1 class="text-lg sm:text-2xl font-bold tracking-tight">EREZER Invoice Generator</h1>
+          <h1 class="text-lg sm:text-2xl font-bold tracking-tight">EREZER</h1>
         </div>
 
         <!-- Mobile Menu Button -->
@@ -100,13 +100,13 @@
   <app-preview-modal *ngIf="showPreview" (close)="showPreview = false"></app-preview-modal>
 
   <!-- Success Notification -->
-  <div *ngIf="showSuccessMessage"
+  <div *ngIf="showSuccessMessage()"
     class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 animate-fade-in-down">
     <div class="flex items-center space-x-3">
       <i class="fas fa-check-circle text-2xl"></i>
       <div>
         <p class="font-bold">Success!</p>
-        <p class="text-sm">{{ successMessage }}</p>
+        <p class="text-sm">{{ successMessage() }}</p>
       </div>
     </div>
   </div>

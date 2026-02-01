@@ -23,8 +23,8 @@ export class App {
 
   showPreview = false;
   mobileMenuOpen = false;
-  showSuccessMessage = false;
-  successMessage = '';
+  showSuccessMessage = signal(false);
+  successMessage = signal('');
 
   toggleMobileMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -46,10 +46,10 @@ export class App {
   }
 
   private showSuccess(message: string) {
-    this.successMessage = message;
-    this.showSuccessMessage = true;
+    this.successMessage.set(message);
+    this.showSuccessMessage.set(true);
     setTimeout(() => {
-      this.showSuccessMessage = false;
+      this.showSuccessMessage.set(false);
     }, 5000);
   }
 }
