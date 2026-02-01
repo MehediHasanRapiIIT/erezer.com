@@ -10,8 +10,8 @@ export class InvoiceService {
     // Default Company Data
     readonly defaultCompany: Company = {
         name: 'EREZER',
-        address: '123 Business Rd, Tech City, TC 90210',
-        phone: '+1 234 567 8900',
+        address: 'Opposite of Dhaka Commerce College, Mirpur-2, Dhaka',
+        phone: '01708697257',
         email: 'contact@erezer.com',
         logoUrl: 'logo.ico'
     };
