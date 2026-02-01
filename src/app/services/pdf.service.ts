@@ -94,8 +94,8 @@ export class PdfService {
         const data = invoice.products.map(p => [
             p.name + (p.description ? `\n${p.description}` : ''),
             p.quantity,
-            `$${p.unitPrice.toFixed(2)}`,
-            `$${p.subtotal.toFixed(2)}`
+            `Tk ${p.unitPrice.toFixed(2)}`,
+            `Tk ${p.subtotal.toFixed(2)}`
         ]);
 
         // Helper to draw watermark
