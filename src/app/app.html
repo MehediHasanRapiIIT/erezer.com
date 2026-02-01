@@ -1,0 +1,114 @@
+<div class="min-h-screen bg-gray-100 font-sans pb-10">
+  <!-- Navbar -->
+  <nav class="bg-blue-600 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <img src="logo.ico" alt="Logo" class="h-8 w-8 sm:h-10 sm:w-10 bg-white rounded p-1">
+          <h1 class="text-lg sm:text-2xl font-bold tracking-tight">EREZER Invoice Generator</h1>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button (click)="toggleMobileMenu()" class="lg:hidden cursor-pointer p-2">
+          <i class="fas" [class.fa-bars]="!mobileMenuOpen" [class.fa-times]="mobileMenuOpen"></i>
+        </button>
+
+        <!-- Desktop Menu -->
+        <div class="hidden lg:flex space-x-2 xl:space-x-4">
+          <button (click)="openPreview()"
+            class="bg-indigo-500 hover:bg-indigo-600 text-white px-3 xl:px-4 py-2 rounded shadow transition cursor-pointer">
+            <i class="fas fa-eye mr-1 xl:mr-2"></i> <span class="hidden xl:inline">Preview</span><span
+              class="xl:hidden">View</span>
+          </button>
+          <button (click)="generateExcel()"
+            class="bg-green-500 hover:bg-green-600 text-white px-3 xl:px-4 py-2 rounded shadow transition cursor-pointer">
+            <i class="fas fa-file-excel mr-1 xl:mr-2"></i> <span class="hidden xl:inline">Update Excel</span><span
+              class="xl:hidden">Excel</span>
+          </button>
+          <button (click)="generatePdf()"
+            class="bg-red-500 hover:bg-red-600 text-white px-3 xl:px-4 py-2 rounded shadow transition cursor-pointer">
+            <i class="fas fa-file-pdf mr-1 xl:mr-2"></i> <span class="hidden xl:inline">Download PDF</span><span
+              class="xl:hidden">PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div *ngIf="mobileMenuOpen" class="lg:hidden mt-4 space-y-2">
+        <button (click)="openPreview(); toggleMobileMenu()"
+          class="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded shadow transition cursor-pointer">
+          <i class="fas fa-eye mr-2"></i> Preview
+        </button>
+        <button (click)="generateExcel(); toggleMobileMenu()"
+          class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow transition cursor-pointer">
+          <i class="fas fa-file-excel mr-2"></i> Update Excel
+        </button>
+        <button (click)="generatePdf(); toggleMobileMenu()"
+          class="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow transition cursor-pointer">
+          <i class="fas fa-file-pdf mr-2"></i> Download PDF
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Left Column: Company & Customer -->
+    <div class="lg:col-span-1 space-y-6">
+      <app-invoice-form></app-invoice-form>
+    </div>
+
+    <!-- Right Column: Products & Totals -->
+    <div class="lg:col-span-2 space-y-6">
+      <app-product-list></app-product-list>
+
+      <!-- Totals Card -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Summary</h2>
+        <div class="space-y-3">
+          <div class="flex justify-between text-gray-600">
+            <span>Subtotal</span>
+            <span>{{ invoiceService.subTotal() | currency:'BDT':'symbol-narrow' }}</span>
+          </div>
+          <!-- Tax Removed -->
+          <div class="flex justify-between text-gray-600 items-center">
+            <span>Discount</span>
+            <div class="flex items-center">
+              <span class="mr-1">-</span>
+              <input type="number" [ngModel]="invoiceService.discount()"
+                (ngModelChange)="invoiceService.discount.set($event)"
+                class="w-20 border rounded px-2 py-1 text-right text-sm focus:outline-none focus:border-blue-500">
+            </div>
+          </div>
+          <div class="flex justify-between text-2xl font-bold text-gray-800 pt-4 border-t">
+            <span>Total</span>
+            <span>{{ invoiceService.total() | currency:'BDT':'symbol-narrow' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-12 text-center text-gray-500 text-sm">
+    &copy; 2026 EREZER Inc. All rights reserved.
+  </footer>
+
+  <!-- Preview Modal -->
+  <app-preview-modal *ngIf="showPreview" (close)="showPreview = false"></app-preview-modal>
+
+  <!-- Success Notification -->
+  <div *ngIf="showSuccessMessage"
+    class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 animate-fade-in-down">
+    <div class="flex items-center space-x-3">
+      <i class="fas fa-check-circle text-2xl"></i>
+      <div>
+        <p class="font-bold">Success!</p>
+        <p class="text-sm">{{ successMessage }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

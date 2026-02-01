@@ -1,0 +1,123 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black bg-opacity-50 backdrop-blur-sm"
+    (click)="close.emit()">
+    <div class="bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col"
+        (click)="$event.stopPropagation()">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+            <h3 class="text-lg font-bold text-gray-800">Invoice Preview</h3>
+            <button (click)="close.emit()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-4 sm:p-8 bg-gray-100 overflow-y-auto flex-1">
+            <div class="bg-white p-4 sm:p-8 shadow-sm min-h-[600px] relative">
+                <!-- Watermark -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.05]">
+                    <h1 class="text-9xl font-bold -rotate-45">{{ invoiceService.company().name }}</h1>
+                </div>
+
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row justify-between items-start gap-4 sm:gap-0 mb-8">
+                    <div class="flex items-center space-x-4">
+                        <img [src]="invoiceService.company().logoUrl" class="h-12 sm:h-16 w-auto">
+                        <div>
+                            <h1 class="text-xl sm:text-2xl font-bold text-blue-700">{{ invoiceService.company().name }}
+                            </h1>
+                            <div class="text-xs sm:text-sm text-gray-500 mt-1 whitespace-pre-line">{{
+                                invoiceService.company().address }}</div>
+                            <div class="text-xs sm:text-sm text-gray-500">Email: {{ invoiceService.company().email }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-left sm:text-right">
+                        <h2 class="text-2xl sm:text-3xl font-light text-gray-800">INVOICE</h2>
+                        <div class="text-gray-600 mt-2 font-medium"># {{ invoiceService.invoiceNumber() }}</div>
+                        <div class="text-gray-500">Date: {{ invoiceService.invoiceDate() | date:'dd-MM-yyyy' }}</div>
+                    </div>
+                </div>
+
+                <!-- Bill To -->
+                <div class="mb-8 border-b pb-4">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Bill To</h3>
+                    <div class="font-bold text-lg text-gray-800">{{ invoiceService.customer().name }}</div>
+                    <div class="text-gray-600 whitespace-pre-line">{{ invoiceService.customer().address }}</div>
+                    <div class="text-gray-600" *ngIf="invoiceService.customer().mobile">Mobile: {{
+                        invoiceService.customer().mobile }}</div>
+                    <div class="text-gray-600">{{ invoiceService.customer().email }}</div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto -mx-4 sm:mx-0">
+                    <table class="w-full mb-8 min-w-[500px]">
+                        <thead>
+                            <tr class="bg-blue-600 text-white text-sm uppercase">
+                                <th class="py-2 px-3 text-left rounded-tl">Product</th>
+                                <th class="py-2 px-3 text-right">Qty</th>
+                                <th class="py-2 px-3 text-right">Unit Price</th>
+                                <th class="py-2 px-3 text-right rounded-tr">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-700 text-sm">
+                            <tr *ngFor="let product of invoiceService.products()"
+                                class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-3 px-3">
+                                    <div class="font-bold">{{ product.name }}</div>
+                                    <div class="text-xs text-gray-500">{{ product.description }}</div>
+                                </td>
+                                <td class="py-3 px-3 text-right">{{ product.quantity }}</td>
+                                <td class="py-3 px-3 text-right">{{ product.unitPrice | currency:'BDT':'symbol-narrow'
+                                    }}</td>
+                                <td class="py-3 px-3 text-right font-medium">{{ product.subtotal |
+                                    currency:'BDT':'symbol-narrow' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Totals -->
+                <div class="flex justify-end mb-12">
+                    <div class="w-64 space-y-2">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Subtotal</span>
+                            <span>{{ invoiceService.subTotal() | currency:'BDT':'symbol-narrow' }}</span>
+                        </div>
+                        <!-- Tax Removed -->
+                        <div class="flex justify-between text-gray-600">
+                            <span>Discount</span>
+                            <span>-{{ invoiceService.discount() | currency:'BDT':'symbol-narrow' }}</span>
+                        </div>
+                        <div class="flex justify-between text-xl font-bold text-gray-800 border-t pt-2">
+                            <span>Total</span>
+                            <span>{{ invoiceService.total() | currency:'BDT':'symbol-narrow' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Images Preview -->
+                <div *ngIf="hasImages">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">Product Images</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        <ng-container *ngFor="let p of invoiceService.products()">
+                            <div *ngFor="let img of p.images" class="text-center">
+                                <div class="border rounded p-1 inline-block bg-white shadow-sm">
+                                    <img [src]="img.url" class="max-h-32 object-contain mx-auto">
+                                </div>
+                                <div class="text-xs mt-1 text-gray-500">{{ p.name }} ({{ img.size }})</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="bg-gray-50 p-4 flex justify-end space-x-3 border-t">
+            <button (click)="close.emit()" class="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded">Close</button>
+        </div>
+
+    </div>
+</div>

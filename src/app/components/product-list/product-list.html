@@ -1,0 +1,101 @@
+<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
+        <h2 class="text-lg sm:text-xl font-bold text-gray-800 flex items-center">
+            <i class="fas fa-boxes mr-2 text-blue-600"></i> Products
+        </h2>
+        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <button (click)="invoiceService.clearAllProducts()"
+                class="w-full sm:w-auto text-red-500 hover:text-red-700 hover:bg-red-50 text-sm font-semibold transition px-3 py-2 rounded border border-red-300 cursor-pointer">
+                <i class="fas fa-trash-alt mr-1"></i> Clear All
+            </button>
+            <button (click)="invoiceService.addProduct()"
+                class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition cursor-pointer">
+                <i class="fas fa-plus mr-1"></i> Add Item
+            </button>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        <div *ngFor="let product of invoiceService.products(); let i = index; trackBy: trackById"
+            class="border rounded-lg p-4 bg-gray-50 hover:shadow-sm transition relative group">
+
+            <!-- Remove Button -->
+            <button (click)="invoiceService.removeProduct(product.id)"
+                class="absolute top-2 right-2 text-red-500 opacity-0 group-hover:opacity-100 transition hover:text-red-700">
+                <i class="fas fa-trash"></i>
+            </button>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <!-- Name & Description -->
+                <div class="md:col-span-6 space-y-2">
+                    <input type="text" [ngModel]="product.name" (ngModelChange)="update(product.id, 'name', $event)"
+                        placeholder="Product Name"
+                        class="w-full border rounded px-2 py-1 font-medium focus:outline-none focus:border-blue-500">
+                    <textarea [ngModel]="product.description"
+                        (ngModelChange)="update(product.id, 'description', $event)" placeholder="Description" rows="1"
+                        class="w-full border rounded px-2 py-1 text-sm text-gray-600 focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+
+                <!-- Qty, Price, Total -->
+                <div class="md:col-span-2">
+                    <label class="text-xs text-gray-500 block">Qty</label>
+                    <input type="number" [ngModel]="product.quantity"
+                        (ngModelChange)="update(product.id, 'quantity', $event)"
+                        class="w-full border rounded px-2 py-1 focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-xs text-gray-500 block">Price</label>
+                    <div class="relative">
+                        <span class="absolute left-2 top-1 text-gray-400">৳</span>
+                        <input type="number" [ngModel]="product.unitPrice"
+                            (ngModelChange)="update(product.id, 'unitPrice', $event)"
+                            class="w-full border rounded pl-5 pr-2 py-1 focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-xs text-gray-500 block">Total</label>
+                    <div class="py-1 font-bold text-gray-800">
+                        {{ product.subtotal | currency:'BDT':'symbol-narrow' }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multi-Image Upload -->
+            <div class="mt-3 pt-3 border-t border-gray-200">
+                <div class="flex flex-wrap gap-4">
+                    <!-- Existing Images -->
+                    <div *ngFor="let img of product.images" class="relative group/img flex flex-col items-center">
+                        <div class="relative w-20 h-20 border rounded overflow-hidden mb-1">
+                            <img [src]="img.url" class="w-full h-full object-cover">
+                            <button (click)="invoiceService.removeProductImage(product.id, img.id)"
+                                class="absolute top-0 right-0 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition z-10">
+                                &times;
+                            </button>
+                        </div>
+
+                        <!-- Size Selector -->
+                        <select [value]="img.size" (change)="updateImageSize(product.id, img.id, $event)"
+                            class="text-xs border rounded px-1 py-0.5 w-20 bg-white focus:outline-none focus:border-blue-500">
+                            <option value="S">Small (S)</option>
+                            <option value="M">Medium (M)</option>
+                            <option value="L">Large (L)</option>
+                            <option value="XL">Extra (XL)</option>
+                            <option value="XXL">2X Large(XXL)</option>
+                        </select>
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                        (drop)="onDrop($event, product.id)"
+                        class="w-20 h-20 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 text-gray-400 hover:text-blue-500 transition relative">
+                        <i class="fas fa-camera text-sm"></i>
+                        <span class="text-[8px] mt-1">Add Img</span>
+                        <input type="file" (change)="onFileSelected($event, product.id)"
+                            class="absolute inset-0 opacity-0 cursor-pointer" multiple accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
