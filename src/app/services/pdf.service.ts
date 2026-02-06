@@ -16,8 +16,8 @@ export class PdfService {
         const pageWidth = doc.internal.pageSize.width;
         const pageHeight = doc.internal.pageSize.height;
 
-        // 1. Blue Header (Full Width)
-        doc.setFillColor(0, 86, 179); // #0056b3
+        // 1. Black Header (Full Width)
+        doc.setFillColor(0, 0, 0); // Black
         doc.rect(0, 0, pageWidth, 40, 'F');
 
         // 2. Header Content (Logo & Company Name)
@@ -57,15 +57,13 @@ export class PdfService {
         doc.setFontSize(10);
         let rightColY = 50;
         doc.setFont('helvetica', 'normal');
-        doc.text('INVOICE #', pageWidth - 10, rightColY, { align: 'right' });
-        doc.setFont('helvetica', 'bold');
-        doc.text(invoice.id, pageWidth - 10, rightColY + 5, { align: 'right' });
+        doc.text(`Invoice Id: ${invoice.id}`, pageWidth - 10, rightColY, { align: 'right' });
 
-        rightColY += 15;
+        rightColY += 10;
         doc.setFont('helvetica', 'normal');
         doc.text('DATE', pageWidth - 10, rightColY, { align: 'right' });
         doc.setFont('helvetica', 'bold');
-        doc.text(new Date(invoice.date).toLocaleDateString(), pageWidth - 10, rightColY + 5, { align: 'right' });
+        doc.text(new Date(invoice.date).toLocaleDateString('en-GB').replace(/\//g, '-'), pageWidth - 10, rightColY + 5, { align: 'right' });
 
         // 4. Customer Details (Left Side below Header)
         let leftColY = 50;
@@ -116,13 +114,20 @@ export class PdfService {
             startY: 85,
             head: head,
             body: data,
-            theme: 'striped',
+            theme: 'grid',
             headStyles: {
-                fillColor: [65, 105, 225],
+                fillColor: [0, 0, 0],
                 textColor: [255, 255, 255],
-                fontStyle: 'bold'
+                fontStyle: 'bold',
+                halign: 'center',
+                lineWidth: 0.5,
+                lineColor: [0, 0, 0]
             },
-            styles: { fontSize: 9 },
+            styles: {
+                fontSize: 9,
+                lineWidth: 0.1,
+                lineColor: [200, 200, 200]
+            },
             columnStyles: {
                 0: { cellWidth: 90 },
                 1: { cellWidth: 20, halign: 'center' },
@@ -156,7 +161,7 @@ export class PdfService {
 
         finalY += 8;
         doc.setFontSize(12);
-        doc.setTextColor(0, 86, 179); // Blue for Total Text
+        doc.setTextColor(0, 0, 0); // Black for Total Text
         doc.setFont('helvetica', 'bold');
         doc.text(`Total:`, summaryX, finalY);
         doc.text(`Tk ${invoice.total.toFixed(2)}`, pageWidth - 10, finalY, { align: 'right' });
@@ -210,9 +215,9 @@ export class PdfService {
 
             // Product Name
             doc.setFontSize(10);
-            doc.setTextColor(0, 86, 179);
+            doc.setTextColor(0, 0, 0);
             doc.setFont('helvetica', 'bold');
-            doc.text(`• ${p.name}`, 10, finalY);
+            doc.text(p.name, 10, finalY);
             finalY += 5;
 
             // Line
